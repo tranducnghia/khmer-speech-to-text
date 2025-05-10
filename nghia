@@ -1,0 +1,39 @@
+cd path/to/android_project
+git init
+git remote add origin https://github.com/<nghiahuyen1990@gmail.com>/khmer-speech-to-text.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+name: Build APK
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 11
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+
+    - name: Build debug APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
